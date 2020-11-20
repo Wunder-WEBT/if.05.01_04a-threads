@@ -23,10 +23,18 @@
  */
 package at.htlleonding.fibonacci;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+
+//Wunder Mattias, 2020
+
 /**
+ * Can you explain why which version is more efficient?
  *
- * @author P. Bauer <p.bauer@htl-leonding.ac.at>
- */
+ *  With multiple threads the calculation can be split.
+ *  This allows several things to be calculated at the same time.
+ *  This makes the whole processing faster, especially on multi-core-processors
+  */
 class Fibonacci {
 
     static int getNumberSingle(int n) {
@@ -37,7 +45,19 @@ class Fibonacci {
     }
 
     static int getNumberParallel(int n) {
-        return -1;
+        if(n < 2)
+            return 1;
+
+        var thread= Executors.newFixedThreadPool(2);
+        var future1=thread.submit(new Call_Able(n-1));
+        var future2=thread.submit(new Call_Able(n-2));
+
+        try {
+            return future1.get()+future2.get();
+        } catch (Exception e) {
+            return -1;
+        }
+
     }
     
 }
