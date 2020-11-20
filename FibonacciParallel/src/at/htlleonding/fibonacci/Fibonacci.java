@@ -23,10 +23,18 @@
  */
 package at.htlleonding.fibonacci;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+
 /**
+ * Can you explain why which version is more efficient?
+ * 2 Weil die Prozedur in zwei Teile geteilt wird und Paralell
+ * verarbeitet wird.
  *
- * @author P. Bauer <p.bauer@htl-leonding.ac.at>
- */
+ *
+ *
+ * Duerk Valentin 3chif
+  */
 class Fibonacci {
 
     static int getNumberSingle(int n) {
@@ -37,7 +45,19 @@ class Fibonacci {
     }
 
     static int getNumberParallel(int n) {
-        return -1;
+        if(n < 2)
+            return 1;
+
+        var thread= Executors.newFixedThreadPool(2);
+        var future1=thread.submit(new Call_Able(n-1));
+        var future2=thread.submit(new Call_Able(n-2));
+
+        try {
+            return future1.get()+future2.get();
+        } catch (Exception e) {
+            return -1;
+        }
+
     }
     
 }
